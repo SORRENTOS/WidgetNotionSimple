@@ -8,7 +8,7 @@ def main(page: ft.Page):
 
     boton1 = ft.Button("Outlook", bgcolor=ft.Colors.BLUE,width=150,height=50,icon= ft.Icons.MAIL_LOCK_ROUNDED,style= ft.ButtonStyle(
         shape= ft.RoundedRectangleBorder(radius=10)
-
+        
 
 
     ))
