@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  UV_PYTHON: 3.14
+  UV_PYTHON: 3.11
 
   # https://docs.flet.dev/reference/environment-variables
   FLET_CLI_NO_RICH_OUTPUT: 1
@@ -30,7 +30,6 @@ jobs:
       - name: Build app
         shell: bash
         run: |
-          uv sync
           uv pip install -r requirements.txt
           uv run flet build web --verbose --base-url ${GITHUB_REPOSITORY#*/} --route-url-strategy hash
 
