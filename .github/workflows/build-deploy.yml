@@ -30,7 +30,7 @@ jobs:
       - name: Build app
         shell: bash
         run: |
-          uv pip install --system flet==0.28.0
+          uv pip install --system flet==0.28.3
           uv run flet build web --base-url ${GITHUB_REPOSITORY#*/} --route-url-strategy hash
 
       - name: Upload Pages Artifact
