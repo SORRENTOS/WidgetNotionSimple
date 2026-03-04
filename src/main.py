@@ -2,22 +2,20 @@ import flet as ft
 
 
 def main(page: ft.Page):
-    counter = ft.Text("0", size=50, data=0)
 
-    def increment_click(e):
-        counter.data += 1
-        counter.value = str(counter.data)
-        counter.update()
 
-    page.floating_action_button = ft.FloatingActionButton(
-        icon=ft.Icons.ADD, on_click=increment_click
-    )
+
+
+    boton1 = ft.Button("\U0001F4E7 Outlook", bgcolor=ft.Colors.BLUE,width=150,height=50,style= ft.ButtonStyle(
+        shape= ft.RoundedRectangleBorder(radius=10)
+
+
+
+    ))
+    fila_botones = ft.Row([boton1])
     page.add(
         ft.SafeArea(
-            ft.Container(
-                counter,
-                alignment=ft.alignment.center,
-            ),
+            fila_botones,
             expand=True,
         )
     )
