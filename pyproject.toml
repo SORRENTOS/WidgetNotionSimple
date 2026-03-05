@@ -9,7 +9,7 @@ authors = [
 ]
 
 dependencies = [
-  "flet==0.81.1.dev7752",
+  "flet==0.28.3,
   "httpx"
 ]
 
