@@ -13,7 +13,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "flet==0.28.3"
+    "flet[all]==0.28.3"
 ]
 
 # Docs: https://docs.flet.dev/publish
