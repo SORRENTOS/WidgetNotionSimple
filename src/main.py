@@ -20,7 +20,7 @@ def main(page: ft.Page):
         ft.SafeArea(
             fila_botones,
             expand=True,
-        )
+         )
     )
 
 
