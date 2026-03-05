@@ -6,16 +6,12 @@ def main(page: ft.Page):
 
 
 
-    boton1 = ft.ElevatedButton("Outlook", bgcolor=ft.Colors.BLUE,width=150,height=50,style= ft.ButtonStyle(
-        shape= ft.RoundedRectangleBorder(radius=10)
 
 
 
-    ))
-    fila_botones = ft.Row([boton1])
     page.add(
         ft.SafeArea(
-            fila_botones,
+            ft.Text("hola"),
             expand=True,
         )
     )
