@@ -1,25 +1,29 @@
 [project]
-name = "widgetnotionsimple"
-version = "0.1.0"
-description = ""
+name = "flet-gha-example"
+version = "0.1.0"   # Build Version. Update for each new release of your app.
+description = "A simple Flet app, built by GitHub Actions."
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-    { name = "Flet developer", email = "you@example.com" }
+    { name = "TheEthicalBoy", email = "me@ethicalboy.com" }
+]
+dependencies = [
+    "flet==0.80.6.dev7664"
 ]
 
-dependencies = [
-  "flet"
+[dependency-groups]
+dev = [
+    "flet[all]==0.80.6.dev7664",
 ]
+
+# Docs: https://docs.flet.dev/publish
 
 [tool.flet]
-org = "com.mycompany"
-product = "widgetnotionsimple"
-company = "Flet"
-copyright = "Copyright (C) 2025 by Flet"
+build_number = 1
+product = "Flet GHA Example"
 
 [tool.flet.app]
 path = "src"
 
-[tool.poetry]
-package-mode = false
+[tool.flet.flutter.pubspec.dependency_overrides]
+flet = { git = { url = "https://github.com/flet-dev/flet.git", ref = "main", path = "packages/flet" } }
