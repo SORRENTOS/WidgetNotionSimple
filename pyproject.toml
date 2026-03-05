@@ -22,5 +22,10 @@ dev = []
 build_number = 1
 product = "Flet GHA Example"
 
+[tool.flet.web]
+dependencies = [
+    "httpx",
+    "oauthlib"
+]
 [tool.flet.app]
 path = "src"
