@@ -10,7 +10,7 @@ authors = [
 ]
 
 dependencies = [
-    "flet==0.80.0"
+    "flet"
 ]
 
 [dependency-groups]
