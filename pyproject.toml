@@ -8,12 +8,12 @@ authors = [
     { name = "TheEthicalBoy", email = "me@ethicalboy.com" }
 ]
 dependencies = [
-    "flet==v0.81.1.dev7752"
+    "flet"
 ]
 
 [dependency-groups]
 dev = [
-    "flet[all]==v0.81.1.dev7752",
+    "flet"
 ]
 
 # Docs: https://docs.flet.dev/publish
