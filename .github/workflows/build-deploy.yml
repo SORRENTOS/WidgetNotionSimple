@@ -1,53 +1,121 @@
-name: Flet Web Build + Deploy Pages
+name: Flet Build Test
 
 on:
   push:
-    branches:
+    branches-ignore:
       - main
+    paths:
+      - ".github/workflows/flet-build-test.yml"
+      - ".fvmrc"
+      - "client/**"
+      - "sdk/python/packages/**"
+      - "packages/flet/**"
+      - "sdk/python/examples/apps/flet_build_test"
+  pull_request:
+    paths:
+      - ".github/workflows/flet-build-test.yml"
+      - ".fvmrc"
+      - "client/**"
+      - "sdk/python/packages/**"
+      - "packages/flet/**"
+      - "sdk/python/examples/apps/flet_build_test"
   workflow_dispatch:
+    inputs:
+      extra_args:
+        description: "Extra CLI args appended to `flet build ...` command (ex: --template-ref 0.1.0)"
+        required: false
+        default: ""
 
 concurrency:
-  group: pages
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 
 env:
   UV_PYTHON: 3.12
   PYTHONUTF8: 1
+
+  # https://docs.flet.dev/reference/environment-variables
   FLET_CLI_NO_RICH_OUTPUT: 1
+
+  # Extra args passed via workflow_dispatch (empty for push/PR)
+  FLET_BUILD_EXTRA_ARGS: ${{ github.event_name == 'workflow_dispatch' && inputs.extra_args || '' }}
 
 jobs:
   build:
-    name: Build Web
-    runs-on: ubuntu-latest
+    name: Build (${{ matrix.name }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # -------- Web --------
+          - name: web-ubuntu
+            runner: ubuntu-latest
+            build_cmd: "flet build web"
+            artifact_name: web-build-ubuntu-artifact
+            artifact_path: build/web
+            needs_linux_deps: false
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup uv
         uses: astral-sh/setup-uv@v6
 
-      # Solo necesario para web (Flet usa Flutter Web)
-      - name: Setup Flutter (via FVM if exists)
-        if: hashFiles('.fvmrc') != ''
+      - name: Install Linux dependencies
+        if: matrix.needs_linux_deps
+        shell: bash
+        run: |
+          sudo apt update --allow-releaseinfo-change
+          sudo apt-get install -y --no-install-recommends \
+            clang \
+            ninja-build \
+            libgtk-3-dev \
+            libasound2-dev \
+            libmpv-dev \
+            mpv \
+            libgstreamer1.0-dev \
+            libgstreamer-plugins-base1.0-dev \
+            libgstreamer-plugins-bad1.0-dev \
+            gstreamer1.0-plugins-base \
+            gstreamer1.0-plugins-good \
+            gstreamer1.0-plugins-bad \
+            gstreamer1.0-plugins-ugly \
+            gstreamer1.0-libav \
+            gstreamer1.0-tools \
+            gstreamer1.0-x \
+            gstreamer1.0-alsa \
+            gstreamer1.0-gl \
+            gstreamer1.0-gtk3 \
+            gstreamer1.0-qt5 \
+            gstreamer1.0-pulseaudio \
+            pkg-config \
+            libsecret-1-0 \
+            libsecret-1-dev
+          sudo apt-get clean
+      - name: Setup Flutter
         uses: kuhnroyal/flutter-fvm-config-action/setup@v3
         with:
           path: ".fvmrc"
           cache: true
 
-      - name: Build web app
+      - name: Build app
         shell: bash
+        working-directory: sdk/python/examples/apps/flet_build_test
         run: |
-          uv run flet build web \
-            --verbose \
-            --base-url ${GITHUB_REPOSITORY#*/} \
-            --route-url-strategy hash \
-            --build-number ${{ github.run_number }}
-
-      - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v4
+          echo "FLET_BUILD_EXTRA_ARGS='${FLET_BUILD_EXTRA_ARGS}'"
+          uv run ${{ matrix.build_cmd }} --yes --verbose --build-number ${{ github.run_number }} $FLET_BUILD_EXTRA_ARGS
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v5.0.0
         with:
-          path: build/web
+          name: ${{ matrix.artifact_name }}
+          path: sdk/python/examples/apps/flet_build_test/${{ matrix.artifact_path }}
+          if-no-files-found: error
+          overwrite: false
 
   deploy:
     name: Deploy to GitHub Pages
