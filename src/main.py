@@ -99,7 +99,8 @@ def main(page: ft.Page):
     fila_botones = ft.Row([boton1,boton3,container_reloj,columan_clase_actual],vertical_alignment=ft.MainAxisAlignment.CENTER,spacing=50,wrap=True)
     page.add(
         ft.SafeArea(
-            fila_botones,
+            
+            ft.ResponsiveRow([fila_botones]),
             expand=True,
          )
     )
